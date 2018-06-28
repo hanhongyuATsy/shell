@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:ClusterConfig xmlns:tns="urn:TODEDomain"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="urn:TODEDomain tode.xsd">
+    <System IPCKEY="87654" UID="501" GID="501"
+            StartTimeOut="30" BlockTime="110"
+            MaxADJNodeNum="100"
+            MaxNodeGroup="500" MaxServerGroup="500"
+            MaxServerNum="1500" MaxServiceNum="2000"
+            RecoverWaitTime="600" BBLQuery="9" ScanUnit="5" sanityScan="3"/>
+    <Nodes>
+        <MPNode machineName="{{MNAME}}" name="{{INTER_SVR_NAME}}"
+                UID="{{UID}}" GID="{{GID}}" IPCKEY="-1"
+                IP="{{IP}}" port="{{PORT_INTER_MPNODE}}"
+                load="2" logLevel="3" performanceFlag="0">
+                <WSL listenIP="{{IP}}" listenPort="{{PORT_OUTER_WSL}}"
+                     HandlerNum="10" MaxConnPerHandler="10" IdleTimeOut="600"
+                     PortRangeFrom="11002" PortRangeTo="12000"
+                     AccessControlList="*.*.*.*"/>
+                <JSL listenIP="{{IP}}" listenPort="{{PORT_OUTER_JSL}}"
+                  HandlerNum="10" MaxConnPerHandler="10" IdleTimeOut="600"
+                     PortRangeFrom="21002" PortRangeTo="22000"
+                     AccessControlList="*.*.*.*" />
+        </MPNode>
+    </Nodes>
+    <NodeGroups/>
+    <ServerGroups>
+        <ServerGroup groupID="120" name="T_FARE_VERCTLGRP" nodeNameOrNodeGroup="{{INTER_SVR_NAME}}" type="S"/>
+        <ServerGroup groupID="121" name="T_FARE_VERMNGGRP" nodeNameOrNodeGroup="{{INTER_SVR_NAME}}" type="S"/>
+        <ServerGroup groupID="123" name="T_FARE_TRCMNGGRP" nodeNameOrNodeGroup="{{INTER_SVR_NAME}}" type="S"/>
+        <ServerGroup groupID="125" name="T_FARE_COMMGRP" nodeNameOrNodeGroup="{{INTER_SVR_NAME}}" type="S"/>
+        <ServerGroup groupID="126" name="T_FARE_PATGRP" nodeNameOrNodeGroup="{{INTER_SVR_NAME}}" type="S"/>
+        <ServerGroup groupID="127" name="T_FARE_ERRGRP" nodeNameOrNodeGroup="{{INTER_SVR_NAME}}" type="S"/>
+        <ServerGroup groupID="128" name="FARECAMNGGRP" nodeNameOrNodeGroup="{{INTER_SVR_NAME}}" type="S"/>
+    </ServerGroups>
+    <Servers>
+        <Server name="old_bestbuy_cache_mng" serverGroup="FARECAMNGGRP" id="1"
+                CLOPT="-t {{OUTER_SVR_NAME_BESTBUY}} -m 1" num="1" maxGen="200" restart="Y" QueType="MSSQ"
+                threadNum="0" Grace="86400" logLevel="3" performanceFlag="0" />
+        <Server name="old_bestbuy_cache_ser" serverGroup="FARECAMNGGRP" id="2"
+                CLOPT="-t {{OUTER_SVR_NAME_BESTBUY}} -m 1" num="1" maxGen="200" restart="Y" QueType="MSSQ"
+                threadNum="0" Grace="86400" logLevel="3" performanceFlag="0" />
+        <Server name="old_bestbuy_ver_ctl" serverGroup="T_FARE_VERCTLGRP" id="1"
+                CLOPT="-appid {{OUTER_SVR_NAME_BESTBUY}}" num="1" maxGen="200" restart="Y" QueType="MSSQ"
+                threadNum="0" Grace="86400" logLevel="3" performanceFlag="0" />
+        <Server name="old_bestbuy_ver_mng" serverGroup="T_FARE_VERMNGGRP" id="1"
+                CLOPT="-appid {{OUTER_SVR_NAME_BESTBUY}} -machine 1" num="1" maxGen="200" restart="Y" QueType="MSSQ"
+                threadNum="0" Grace="86400" logLevel="3" performanceFlag="0" />
+        <Server name="old_bestbuy_trc_mng" serverGroup="T_FARE_TRCMNGGRP" id="1"
+                CLOPT="-appid {{OUTER_SVR_NAME_BESTBUY}}" num="2" maxGen="200" restart="Y" QueType="MSSQ"
+                threadNum="0" Grace="86400" logLevel="3" performanceFlag="0" />
+        <Server name="old_bestbuy_comm" serverGroup="T_FARE_COMMGRP" id="1"
+                CLOPT="-appid {{OUTER_SVR_NAME_BESTBUY}} -plugin FareFeRcvPlugin" num="1" maxGen="200" restart="Y" QueType="MSSQ"
+                threadNum="0" Grace="86400" logLevel="3" performanceFlag="0" />
+        <Server name="old_bestbuy_comm_out" serverGroup="T_FARE_COMMGRP" id="21"
+                CLOPT="-appid {{OUTER_SVR_NAME_BESTBUY}} -plugin FareFeSndPlugin" num="1" maxGen="200" restart="Y" QueType="MSSQ"
+                threadNum="0" Grace="86400" logLevel="3" performanceFlag="0" />
+        <Server name="old_bestbuy_pat_svr" serverGroup="T_FARE_PATGRP" id="1"
+                CLOPT="-appid {{OUTER_SVR_NAME_BESTBUY}} -plugin PAT:PatPlugin -svc BBPATSVC"
+                num="1" maxGen="200" restart="Y" QueType="MSSQ"
+                threadNum="0" Grace="86400" logLevel="3" performanceFlag="0" />
+        <Server name="old_bestbuy_err_svr" serverGroup="T_FARE_ERRGRP" id="1"
+                CLOPT="-appid {{OUTER_SVR_NAME_BESTBUY}} -plugin ERR:ErrorPlugin -svc BBERRSVC"
+                num="1" maxGen="200" restart="Y" QueType="MSSQ"
+                threadNum="0" Grace="86400" logLevel="3" performanceFlag="0" />
+    </Servers>
+    <Services>
+        <Service name="{{OUTER_SVR_NAME_BESTBUY}}COMM" timeout="-1" type="EXPORT"/>
+    </Services>
+</tns:ClusterConfig>
+
