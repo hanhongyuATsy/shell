@@ -9,3 +9,6 @@
 功能：用于递归读取目录下的代码文件，并统计代码总行数
 使用方法：code_diff_line_statistics.sh dirA
 
+名字： EnvAutoDeploy
+功能：徐东雷编写自动化编译运行的shell脚本
+使用方法：文件内部有readme
